@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Extension Manager</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-top">
+        <h1>Extensions</h1>
+        <div class="header-buttons">
+          <button id="reload-btn" class="header-icon-btn" title="Reload Extensions">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+            </svg>
+          </button>
+          <button id="help-btn" class="header-icon-btn" title="Help">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+            </svg>
+          </button>
+          <button id="settings-btn" class="header-icon-btn" title="Settings">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="controls">
+        <input type="text" id="search" placeholder="Search extensions...">
+        <select id="filter">
+          <option value="all">All</option>
+          <option value="enabled">Enabled</option>
+          <option value="disabled">Disabled</option>
+        </select>
+        <select id="sort">
+          <option value="name">Name</option>
+          <option value="enabled">Status</option>
+          <option value="type">Type</option>
+          <option value="risk">Risk</option>
+        </select>
+        <select id="permissions-filter">
+          <option value="all">All Permissions</option>
+          <option value="tabs">Tabs</option>
+          <option value="storage">Storage</option>
+          <option value="cookies">Cookies</option>
+          <option value="webRequest">Web Request</option>
+          <option value="history">History</option>
+          <option value="bookmarks">Bookmarks</option>
+          <option value="downloads">Downloads</option>
+          <option value="geolocation">Geolocation</option>
+          <option value="notifications">Notifications</option>
+          <option value="clipboardRead">Clipboard Read</option>
+          <option value="clipboardWrite">Clipboard Write</option>
+        </select>
+      </div>
+    </header>
+
+    <!-- Settings Panel -->
+    <div id="settings-panel" class="settings-panel hidden">
+      <div class="settings-header">
+        <h2>Settings</h2>
+        <button id="close-settings" class="close-btn">&times;</button>
+      </div>
+
+      <div class="settings-content">
+        <!-- Default View Settings -->
+        <div class="settings-section">
+          <h3>Default View</h3>
+          <div class="setting-item">
+            <label for="default-collapsed">
+              <input type="checkbox" id="default-collapsed" checked>
+              Collapse extensions by default
+            </label>
+          </div>
+          <div class="setting-item">
+            <label for="default-filter">Default filter:</label>
+            <select id="default-filter">
+              <option value="all">All</option>
+              <option value="enabled">Enabled</option>
+              <option value="disabled">Disabled</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <label for="default-sort">Default sort:</label>
+            <select id="default-sort">
+              <option value="name">Name</option>
+              <option value="enabled">Status</option>
+              <option value="type">Type</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Appearance Settings -->
+        <div class="settings-section">
+          <h3>Appearance</h3>
+          <div class="setting-item">
+            <label for="theme-mode">Theme:</label>
+            <select id="theme-mode">
+              <option value="auto">Auto (System)</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <label for="compact-mode">
+              <input type="checkbox" id="compact-mode">
+              Compact mode
+            </label>
+          </div>
+          <div class="setting-item">
+            <label for="icon-size">Icon size:</label>
+            <select id="icon-size">
+              <option value="small">Small (24px)</option>
+              <option value="medium" selected>Medium (32px)</option>
+              <option value="large">Large (48px)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Extension Profiles -->
+        <div class="settings-section">
+          <h3>Extension Profiles</h3>
+          <div class="setting-item">
+            <label for="profile-select">Current profile:</label>
+            <select id="profile-select">
+              <option value="">-- None --</option>
+            </select>
+          </div>
+          <div class="profile-actions">
+            <button id="save-profile" class="profile-btn">Save Current</button>
+            <button id="load-profile" class="profile-btn">Load</button>
+            <button id="delete-profile" class="profile-btn danger">Delete</button>
+          </div>
+          <div class="setting-item">
+            <input type="text" id="new-profile-name" placeholder="New profile name...">
+            <button id="create-profile" class="profile-btn">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Help Panel -->
+    <div id="help-panel" class="help-panel hidden">
+      <div class="settings-header">
+        <h2>Help & Information</h2>
+        <button id="close-help" class="close-btn">&times;</button>
+      </div>
+
+      <div class="settings-content">
+        <div class="settings-section">
+          <h3>Risk Levels</h3>
+          <div class="help-item">
+            <span class="risk-badge risk-high">High Risk</span>
+            <p>Extensions with permissions that can access sensitive data like cookies, history, passwords, or all websites.</p>
+          </div>
+          <div class="help-item">
+            <span class="risk-badge risk-medium">Medium Risk</span>
+            <p>Extensions with permissions for tabs, storage, notifications, or specific website access.</p>
+          </div>
+          <div class="help-item">
+            <span class="risk-badge risk-low">Low Risk</span>
+            <p>Extensions with minimal permissions that pose little security risk.</p>
+          </div>
+          <div class="help-item">
+            <span class="risk-badge risk-none">No Risk</span>
+            <p>Extensions with no special permissions requested.</p>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>Permission Colors</h3>
+          <div class="help-item">
+            <span class="perm-badge perm-high">High</span>
+            <p>Permissions that can access sensitive user data or significantly modify browser behavior.</p>
+          </div>
+          <div class="help-item">
+            <span class="perm-badge perm-medium">Medium</span>
+            <p>Permissions that can access some user data or modify content on pages.</p>
+          </div>
+          <div class="help-item">
+            <span class="perm-badge perm-low">Low</span>
+            <p>Permissions with minimal security implications.</p>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>Features</h3>
+          <div class="help-text">
+            <p><strong>Search:</strong> Filter extensions by name or description.</p>
+            <p><strong>Filter:</strong> Show all, enabled, or disabled extensions.</p>
+            <p><strong>Sort:</strong> Order by name, status, type, or risk level.</p>
+            <p><strong>Permissions Filter:</strong> Find extensions with specific permissions.</p>
+            <p><strong>Profiles:</strong> Save and restore extension configurations.</p>
+            <p><strong>Click "+X more":</strong> Expand to see all permissions.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="stats">
+      <span id="total-count">Total: 0</span>
+      <span id="enabled-count">Enabled: 0</span>
+      <span id="disabled-count">Disabled: 0</span>
+    </div>
+    <div id="extensions-list"></div>
+    <footer class="app-footer">
+      <div class="version-info">Extension Manager v1.0</div>
+      <div class="author-info">Built by Michael Hanson</div>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
