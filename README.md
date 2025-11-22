@@ -1,7 +1,7 @@
 # Extension Management
 
 **A Chrome Extension Security & Compliance Tool**
-*Built by Micahel*
+*Built by Michael and totally not documented with AI*
 
 ---
 
